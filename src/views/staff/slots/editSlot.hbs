@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarStaff}}
+        <div class="main_content">
+            <div class="container">
+                {{#if addFailed}}
+                <div class="alert alert-danger mt-3" id="addFailed">Thông tin không hợp lệ</div>
+                {{/if}}
+                <form class="mt-5" method="post" action="/staff/viewSlot/{{slot._id}}?_method=PUT">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Lịch trình</label>
+                        <input type="text" value="{{slot.name}}" class="form-control" name="name" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Khóa học</label>
+                        <select class="form-select" name="description" aria-label="Lựa chọn khóa học" value="description" required>
+                            {{#each categories}}
+                                {{#if (compare this.name ../description)}}
+                                    <option value="{{this.name}}">{{this.name}}</option>
+                                {{else}}
+                                    <option value="{{this.name}}">{{this.name}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Thời gian bắt đầu</label>
+                        <input type="text" value="{{slot.startTime}}" class="form-control" name="startTime"
+                            id="startTime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Thời gian kết thúc</label>
+                        <input type="text" value="{{slot.endTime}}" class="form-control" name="endTime" id="endTime"
+                            required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{> footer}}
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+
+    <script>
+        let inputs = document.querySelectorAll('input');
+        let addFailed = document.querySelector("#addFailed");
+        for (input of inputs) {
+            input.onclick = () => {
+                addFailed.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>

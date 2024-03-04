@@ -1,0 +1,107 @@
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/styleLogin.css" />
+  </head>
+
+  <body>
+    <div class="logoLogin">
+      <img class="logoLogin__img" src="images/bg-logo.png" alt="logo" />
+    </div>
+    <div class="bg-login">
+      <div class="img-login">
+
+      </div>
+      <div class="login">
+        <div class="login-title">
+          <h3>DevPro Việt Nam</h3>
+          <p class="title">Học tập là con đường ngắn nhất đến thành công
+            <i class="fa fa-heart"></i></p>
+        </div>
+        <form action="/login" method="post" class="form" id="form1">
+          <p>Đăng nhập</p>
+          <div class="form-group">
+            <input
+              id="email"
+              name="email"
+              type="text"
+              placeholder="Email"
+              class="form-control"
+            />
+            <span class="form-message"></span>
+          </div>
+          <div class="form-group form-password">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              class="form-control"
+            />
+            <span class="form-message"></span>
+            <div class="eye">
+              <i class="fa fa-eye-slash"></i>
+            </div>
+            <div class="forgot-password">
+              <a href="#">Quên mật khẩu</a>
+            </div>
+            {{#if failedLogin}}
+              <span
+                class="text-danger"
+                id="failedLogin"
+                style="font-size: 14px;"
+              >Sai thồng tin đăng nhập hoặc mật khẩu</span>
+            {{/if}}
+          </div>
+          <button class="form-submit btn-login">Đăng nhập</button>
+          <div class="line">
+            <p>hoặc</p>
+          </div>
+          <div class="login-socials">
+            <button class="btn btn-fb">
+              <div class="logo"><i class="fab fa-facebook"></i></div>
+              <div class="text">Facebook</div>
+            </button>
+            <button class="btn btn-google">
+              <div class="logo"><img src="images/google.png" alt="" /></div>
+              <div class="text">Google</div>
+            </button>
+            <button class="btn btn-github">
+              <div class="logo"><i class="fab fa-github"></i></div>
+              <div class="text">Github</div>
+            </button>
+          </div>
+          <div class="login-new">
+            <span class="new-text">Bạn đã có tài khoản chưa?</span>
+          </div>
+        </form>
+      </div>
+      <div class="text-login">
+        <p>Chào mừng bạn đến</p>
+        <h2>DevPro Việt Nam</h2>
+        <div class="line"></div>
+        <p>Tham gia học tập cùng với DevPro Việt Nam</p>
+      </div>
+    </div>
+    <script type="module" src="../js/login.js"></script>
+  </body>
+
+</html>

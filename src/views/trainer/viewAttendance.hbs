@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedules</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarTrainer}}
+        <div class="main_content">
+            <div class="container mb-5">
+                <h1 class="text-center">Lịch trình {{schedule.time}}</h1>
+                <div class="my-3">
+                    <a class="text-decoration-none" href="/trainer/viewSchedules/{{schedule.idCourse}}"
+                        style="font-size: 20px"></a>
+                </div>
+                <div class="top">
+                    <div class="row">
+                        <div class="col">
+                            <p><span>Ngày: </span>{{schedule.time}}</p>
+                            <p><span>Buổi: </span>{{schedule.slot}}</p>
+                            <p><span>Khóa học: </span>{{schedule.nameCourse}}</p>
+                            <p><span>Giảng viên: </span>{{schedule.nameTrainer}}</p>
+                            {{!-- <p>Attendance of trainees in the schedule: </p> --}}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">STT.</th>
+                                        <th scope="col">Ảnh đại diện</th>
+                                        <th scope="col">Ho và tên</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col" class='text-center'>Điểm danh</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each schedule.trainees}}
+                                    <tr>
+                                        <th scope="row">{{sum @index}}</th>
+                                        <td class='text-center'><img src="/images/{{this.avatar}}" alt="avt" width="100"
+                                                height="120"></td>
+                                        <td>{{this.name}}</td>
+                                        <td>{{this.email}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-around align-items-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input radio-present" type="radio"
+                                                        name="radio_{{this._id}}" id="{{this._id}}"
+                                                        data_id="{{this._id}}" {{#if (isTrue
+                                                        this.attendance)}}checked{{/if}}>
+                                                    <label class="form-check-label" for="present_{{this._id}}">
+                                                        Đi học
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input radio-absent" type="radio"
+                                                        name="radio_{{this._id}}" id="{{this._id}}"
+                                                        data_id="{{this._id}}" {{#if (isFalse
+                                                        this.attendance)}}checked{{/if}}>
+                                                    <label class="form-check-label" for="absent_{{this._id}}">
+                                                        Nghỉ học
+                                                    </label>
+                                                </div>
+                                                {{!-- <div class="form-check">
+                                                    <input class="form-check-input radio-notYet" type="radio"
+                                                        name="radio_{{this._id}}" id="{{this._id}}"
+                                                        data_id="{{this._id}}" {{#if (isNull
+                                                        this.attendance)}}checked{{/if}} disabled>
+                                                    <label class="form-check-label" for="absent_{{this._id}}">
+                                                        Not Yet
+                                                    </label>
+                                                </div> --}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{else}}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Lịch trình này chưa có học viên</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            <button class="btn btn-primary" id="save" disabled>Cập nhật</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> footer }}
+
+    <form class="form-delete" method="post" action="/trainer/viewSchedule/{{schedule._id}}/attendance?_method=PUT"
+        id="form"></form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let presents = [];
+            let absents = [];
+
+            const radioPresents = document.querySelectorAll('.radio-present');
+            const radioAbsents = document.querySelectorAll('.radio-absent');
+            const save = document.getElementById('save')
+            const form = document.getElementById('form')
+
+            for (let radioPresent of radioPresents) {
+                if (radioPresent.checked) {
+                    presents.push(radioPresent.getAttribute('data_id'))
+                }
+
+                radioPresent.onclick = (event) => {
+                    let radio = event.target
+                    if (presents.includes(radio.getAttribute('data_id'))) return;
+                    presents.push(radio.getAttribute('data_id'))
+                    absents = absents.filter(absent => absent !== radio.getAttribute('data_id'))
+                    save.disabled = false;
+                }
+            }
+
+            for (let radioAbsent of radioAbsents) {
+                if (radioAbsent.checked) {
+                    absents.push(radioAbsent.getAttribute('data_id'))
+                }
+
+                radioAbsent.onclick = (event) => {
+                    let radio = event.target
+                    if (absents.includes(radio.getAttribute('data_id'))) return;
+                    absents.push(radio.getAttribute('data_id'))
+                    presents = presents.filter(present => present !== radio.getAttribute('data_id'))
+                    save.disabled = false;
+                }
+            }
+
+            save.onclick = () => {
+                const presentsField = document.createElement('input');
+                presentsField.type = 'hidden';
+                presentsField.name = 'presents';
+                presentsField.value = presents;
+                form.append(presentsField);
+
+                const absentsField = document.createElement('input');
+                absentsField.type = 'hidden';
+                absentsField.name = 'absents';
+                absentsField.value = absents;
+                form.append(absentsField);
+
+                form.submit()
+            }
+        });
+    </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Student</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarStaff}}
+        <div class="main_content">
+            <div class="container">
+                {{#if addFailed}}
+                    {{#if error}}
+                        <div class="alert alert-danger mt-4" id="addFailed">{{error}}</div>
+                    {{else}}
+                        <div class="alert alert-danger mt-4" id="addFailed">Thông tin không hợp lệ</div>
+                    {{/if}}
+                {{/if}}
+                <form class="mt-5" method="post" action="/staff/viewSchedule/store">
+                    <div class="mb-3">
+                        <select class="form-select" name="idCourse" aria-label="Select course" value="idCourse" required>
+                            {{#each courses}}
+                                {{#if (compare this._id ../idCourse)}}
+                                    <option value="{{this._id}}" selected>{{this.nameSelect}}</option>
+                                {{else}}
+                                    <option value="{{this._id}}">{{this.nameSelect}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select" name="idSlot" aria-label="Select slot" required>
+                            {{#each slots}}
+                                {{#if (compare this._id ../idSlot)}}
+                                    <option value="{{this._id}}" selected>{{this.name}} ({{this.startTime}} - {{this.endTime}})</option>
+                                {{else}}
+                                    <option value="{{this._id}}">{{this.name}} ({{this.startTime}} - {{this.endTime}})</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Ngày lên lịch</label>
+                        <input type="date" data-date-format="mm/dd/yyyy" class="form-control" name="date"
+                            id="date" required value="{{date}}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{> footer}}
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script>
+        let inputs = document.querySelectorAll('input');
+        let addFailed = document.querySelector("#addFailed");
+        for (input of inputs) {
+            input.onclick = () => {
+                addFailed.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>

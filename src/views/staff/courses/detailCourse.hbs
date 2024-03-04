@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lớp học</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarStaff}}
+        <div class="main_content">
+            <div class="container mb-5">
+                <h1 class="text-center">{{course.name}} course</h1>
+                <div class="my-3">
+                    <a class="text-decoration-none" href="/staff/viewCourses" style="font-size: 20px"></a>
+                </div>
+                <div class="top">
+                    <div class="row">
+                        <div class="col">
+                            <p><span>Tên lớp học: </span>{{course.name}}</p>
+                            <p><span>Mô tả: </span>{{course.description}}</p>
+                            <p><span>Tên khóa học: </span>{{course.nameCategory}}</p>
+                            <p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Giảng viên: <span class="trainer-name">{{course.nameTrainer}}</span></span>
+                                {{#if deleteTrainer}}
+                                    <button class="btn btn-danger btn-close-trainer" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModalTrainer" data-id="{{course._id}}"
+                                        data-idTrainer="{{course.idTrainer}}" style="margin-right: 130px;">Xóa giảng viên</button>
+                                {{else}}
+                                    <button class="btn btn-secondary"
+                                        style="margin-right: 130px;">Không thể xóa giảng viên vì lớp học đã có lịch trình</button>
+                                {{/if}}
+                            </div>
+                            <a href="/staff/viewCourses/{{course._id}}/viewAddTrainer"
+                                class="btn btn-success btn-addTrainer">Thêm giảng viên</a>
+                            </p>
+                            <p>
+                            <p>Danh sách học viên: </p>
+                            <a href="/staff/viewCourses/{{course._id}}/viewAddTrainee" class="btn btn-success">Thêm học viên</a>
+                            </p>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">STT.</th>
+                                        <th scope="col">Ảnh đại diện</th>
+                                        <th scope="col">Họ và tên</th>
+                                        <th scope="col">Email</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each course.objTrainee}}
+                                    <tr>
+                                        <th scope="row">{{sum @index}}</th>
+                                        <td class='text-center'><img src="/images/{{this.avatar}}" alt="avt" width="100"
+                                                height="120"></td>
+                                        <td>{{this.name}}</td>
+                                        <td>{{this.email}}</td>
+                                        <td>
+                                            <button class="btn btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal" data-id="{{../course._id}}"
+                                                data-idTrainee="{{this._id}}">Xóa</button>
+                                        </td>
+                                    </tr>
+                                    {{else}}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Khóa học này chưa có học viên</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> footer }}
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa học viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa học viên này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-trainee" type="button" class="btn btn-danger">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModalTrainer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa giảng viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa giảng viên này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-trainer" type="button" class="btn btn-danger">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-delete" method="post"></form>
+    <form class="form-delete-trainer" method="post"></form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let courseId;
+            let traineeId;
+            let trainerId;
+
+            let deleteForm = document.querySelector('.form-delete')
+            let btnDeleteTrainee = document.querySelector('#btn-delete-trainee')
+            let deleteModal = document.getElementById('deleteModal')
+
+            let deleteFormTrainer = document.querySelector('.form-delete-trainer')
+            let btnDeleteTrainer = document.querySelector('#btn-delete-trainer')
+            let deleteModalTrainer = document.getElementById('deleteModalTrainer')
+            let btnTrainer = document.querySelector('.btn-addTrainer')
+            let nameTrainer = document.querySelector('.trainer-name')
+            let btnCloseTrainer = document.querySelector('.btn-close-trainer')
+            if (nameTrainer.innerHTML) {
+                btnTrainer.style.display = 'none';
+                btnCloseTrainer.style.display = 'inline-block';
+            } else {
+                btnTrainer.style.display = 'inline-block';
+                btnCloseTrainer.style.display = 'none';
+            }
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                courseId = button.getAttribute('data-id')
+                traineeId = button.getAttribute('data-idTrainee')
+            })
+            btnDeleteTrainee.onclick = () => {
+                deleteForm.action = `/staff/viewCourses/${courseId}/deleteTrainee/${traineeId}?_method=DELETE`;
+                deleteForm.submit();
+            }
+            deleteModalTrainer.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                courseId = button.getAttribute('data-id')
+                trainerId = button.getAttribute('data-idTrainer')
+            })
+            btnDeleteTrainer.onclick = () => {
+                deleteFormTrainer.action = `/staff/viewCourses/${courseId}/deleteTrainer/${trainerId}?_method=DELETE`;
+                deleteFormTrainer.submit();
+            }
+        })
+    </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

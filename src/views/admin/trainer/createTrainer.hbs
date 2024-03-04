@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Trainer</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarAdmin}}
+        <div class="main_content">
+            <div class="container">
+                {{#if addFailed}}
+                <div class="alert alert-danger mt-3" id="addFailed">Thông tin không hợp lệ</div>
+                {{/if}}
+                <form class="mt-5" method="post" action="/admin/viewTrainer/create">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Họ và tên</label>
+                        <input type="text" class="form-control" required name="name" id="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Email</label>
+                        <input type="text" class="form-control" required name="email" id="email">
+                    </div>
+                    {{!-- <div class="mb-3">
+                        <label for="name" class="form-label">Trainer Age</label>
+                        <input type="text" class="form-control" required name="age" id="age">
+                    </div> --}}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">SĐT</label>
+                        <input type="text" class="form-control" required name="phone" id="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" required name="address" id="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tạo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    {{> footer}}
+
+    <script>
+        let inputs = document.querySelectorAll('input');
+        let addFailed = document.querySelector("#addFailed");
+        for (input of inputs) {
+            input.onclick = () => {
+                addFailed.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

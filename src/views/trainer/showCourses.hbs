@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+    <style>
+        .active {
+            background-color: black !important;
+        }
+    </style>
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarTrainer}}
+        <div class="main_content">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        {{#if idCategory}}
+                        <form method="get" action="/trainer/searchcourses/{{idCategory}}" class="d-flex my-4">
+                            <input type="text" name="name" class="form-control me-2">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                        {{else}}
+                        <form method="get" action="/trainer/searchcourses" class="d-flex my-4">
+                            <input type="text" name="name" class="form-control me-2">
+                            <button type="submit" class="btn btn-primary">Tìm</button>
+                        </form>
+                        {{/if}}
+                    </div>
+                    <span class="m-3 me-5">Tổng: {{count}}</span>
+                </div>
+                <div class="div">
+                    {{#if idCategory}}
+                    <button class="btn btn-secondary"><a href="/trainer"
+                            style="color: white;text-decoration: none;">Tất cả</a></button>
+                    {{#each categories }}
+                    {{#if (compare this._id ../idCategory)}}
+                    <button class="btn btn-secondary active"><a href="/trainer/{{this._id}}"
+                            style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                    {{else}}
+                    <button class="btn btn-secondary"><a href="/trainer/{{this._id}}"
+                            style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                    {{/if}}
+                    {{/each}}
+                    {{else}}
+                    <button class="btn btn-secondary active"><a href="/trainer"
+                            style="color: white;text-decoration: none;">Tất cả</a></button>
+                    {{#each categories }}
+                    <button class="btn btn-secondary "><a href="/trainer/{{this._id}}"
+                            style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                    {{/each}}
+                    {{/if}}
+                </div>
+                <table class="table table-hover">
+                    <thead class="bg-warning">
+                        <tr>
+                            <th scope="col">STT.</th>
+                            <th scope="col">Tên lớp</th>
+                            <th scope="col">Khóa học</th>
+                            <th scope="col">Mô tả</th>
+                            <th scope="col">Thông số</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#if courses}}
+                        {{#each courses}}
+                        <tr>
+                            <th>{{sum @index}}</th>
+                            <td>{{this.name}}</td>
+                            <td>{{this.category}}</td>
+                            <td>{{this.description}}</td>
+                            <td>{{this.quantity}}</td>
+                            <td>
+                                <a class="btn btn-success" href="/trainer/showalltrainees/{{this.id}}">Chi tiết</a>
+                                <a class="btn btn-primary" href="/trainer/viewSchedules/{{this.id}}">Lịch trình</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="6" class="text-center">Bạn chưa có khóa học nào.</td>
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        {{#if course}}
+                        <tr>
+                            <th>1</th>
+                            <td>{{course.name}}</td>
+                            <td>{{course.category}}</td>
+                            <td>{{course.description}}</td>
+                            <td>{{course.quantity}}</td>
+                            <td>
+                                <a href="/trainer/showalltrainees/{{course.id}}">Hiển thị học viên</a>
+                                <a class="btn btn-primary" href="/trainer/viewSchedules/{{course.id}}">Hiển thị lịch trình</a>
+                            </td>
+                        </tr>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan='6' class='text-center'>Không thể tìm thấy khóa học này</td>
+                        </tr>
+                        {{/if}}
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {{> footer}}
+    <!-- Button trigger modal -->
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

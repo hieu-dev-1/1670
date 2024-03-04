@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lớp</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarStaff}}
+        <div class="main_content">
+            <div class="container">
+                <h1 class="text-center">{{course.name}} course</h1>
+                <div class="my-3">
+                    <a class="text-decoration-none" href="/staff/viewCourses/{{course._id}}"
+                        style="font-size: 20px"></a>
+                </div>
+                <div class="bottom">
+                    <div class="row">
+                        <div class="col bottom-left">
+                            <form class="d-flex input-group" method="get"
+                                action='/staff/searchAddTrainer/{{course._id}}'>
+                                <input class="form-control" name="name" type="search" placeholder="Tìm kiếm"
+                                    aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+                            </form>
+                            <form class="mt-5" method="POST" action="/staff/viewCourses/{{course._id}}/addTrainer">
+                                <button class="btn btn-primary">Thêm giảng viên</button>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Ảnh đại diện</th>
+                                            <th scope="col">Họ và tên</th>
+                                            <th scope="col">Email</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each trainers}}
+                                        <tr>
+                                            <td><input value="{{this._id}}" class="form-check-input" name="trainerId"
+                                                    type="radio">
+                                            </td>
+                                            <td>{{sum @index}}</td>
+                                            <td><img src="/images/{{this.avatar}}" alt="avt" width="100"
+                                                height="120"></td>
+                                            <td>{{this.name}}</td>
+                                            <td>{{this.email}}</td>
+
+                                        </tr>
+                                        {{else}}
+                                        <tr>
+                                            <td class='text-center' colspan="4">Không có giảng viên</td>
+                                        </tr>
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{> footer}}
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+    <style>
+        .active {
+            background-color: black !important;
+        }
+    </style>
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarTrainee}}
+        <div class="main_content">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
+                        {{#if idCategory}}
+                            {{#if type}}
+                                <form method="get" action="/trainee/searchlistcourses/{{idCategory}}" class="d-flex my-4">
+                                    <input type="text" name="name" class="form-control me-2">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            {{else}}
+                                <form method="get" action="/trainee/searchcourses/{{idCategory}}" class="d-flex my-4">
+                                    <input type="text" name="name" class="form-control me-2">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            {{/if}}
+                        {{else}}
+                            {{#if type}}
+                                <form method="get" action="/trainee/searchlistcourses" class="d-flex my-4">
+                                    <input type="text" name="name" class="form-control me-2">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            {{else}}
+                                <form method="get" action="/trainee/searchcourses" class="d-flex my-4">
+                                    <input type="text" name="name" class="form-control me-2">
+                                    <button type="submit" class="btn btn-primary">Tìm</button>
+                                </form>
+                            {{/if}}
+                        {{/if}}
+                        <span class="m-3 me-5">Tổng: {{count}}</span>
+                    </div>
+                </div>
+                <div class="div">
+                    {{#if idCategory}}
+                        {{#if type}}
+                            <button class="btn btn-secondary"><a href="/trainee/listCourse"
+                            style="color: white;text-decoration: none;">Tất cả</a></button>
+                        {{else}}
+                            <button class="btn btn-secondary"><a href="/trainee"
+                                    style="color: white;text-decoration: none;">Tất cả</a></button>
+                        {{/if}}
+                    {{#each categories }}
+                    {{#if (compare this._id ../idCategory)}}
+                        {{#if ../type}}
+                                <button class="btn btn-secondary active"><a href="/trainee/listCourse/{{this._id}}"
+                                    style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{else}}
+                            <button class="btn btn-secondary active"><a href="/trainee/{{this._id}}"
+                                    style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{/if}}
+                    {{else}}
+                        {{#if ../type}}
+                            <button class="btn btn-secondary"><a href="/trainee/listCourse/{{this._id}}"
+                                style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{else}}
+                            <button class="btn btn-secondary"><a href="/trainee/{{this._id}}"
+                                    style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{/if}}
+                    {{/if}}
+                    {{/each}}
+                    {{else}}
+                        {{#if type}}
+                            <button class="btn btn-secondary active"><a href="/trainee/listCourse"
+                                style="color: white;text-decoration: none;">Tất cả</a></button>
+                        {{else}}
+                            <button class="btn btn-secondary active"><a href="/trainee/"
+                                    style="color: white;text-decoration: none;">Tất cả</a></button>
+                        {{/if}}
+                    {{#each categories }}
+                        {{#if ../type}}
+                            <button class="btn btn-secondary "><a href="/trainee/listCourse/{{this._id}}"
+                                style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{else}}
+                            <button class="btn btn-secondary "><a href="/trainee/{{this._id}}"
+                                    style="color: white;text-decoration: none;">{{this.name}}</a></button>
+                        {{/if}}
+                    {{/each}}
+                    {{/if}}
+                </div>
+                <table class="table table-hover">
+                    <thead class="bg-warning">
+                        <tr>
+                            <th scope="col">STT.</th>
+                            <th scope="col">Tên lớp</th>
+                            <th scope="col">Khóa học</th>
+                            <th scope="col">Mô tả</th>
+                            <th scope="col">Thông số</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#if courses}}
+                        {{#each courses}}
+                        <tr>
+                            <th>{{sum @index}}</th>
+                            <td>{{this.name}}</td>
+                            <td>{{this.category}}</td>
+                            <td>{{this.description}}</td>
+                            <td>{{this.quantity}}</td>
+                            <td>
+                                <a class="btn btn-success" href="/trainee/showalltrainees/{{this.id}}">Chi tiết</a>
+                                <a class="btn btn-primary" href="/trainee/viewSchedules/{{this.id}}">Lịch trình</a>
+                                {{#if ../type}}
+                                    {{#if this.registered}}
+                                        <button class="btn btn-danger" href="" data-bs-toggle="modal" data-bs-target="#unregisterModal"
+                                    data-id="{{this.id}}">Hủy đăng ký</button>
+                                    {{else}}
+                                        {{#if full_slot}}
+                                            <button type="button" class="btn btn-secondary" disabled>Hết lượt đăng ký</button>
+                                        {{else}}
+                                            <a class="btn btn-warning" href="" data-bs-toggle="modal" data-bs-target="#registerModal"
+                                            data-id="{{this.id}}">Đăng ký</a>
+                                        {{/if}}
+                                    {{/if}}
+                                {{/if}}
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="6" class="text-center">Bạn chưa có khóa học nào.</td>
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        {{#if course}}
+                        <tr>
+                            <th>1</th>
+                            <td>{{course.name}}</td>
+                            <td>{{course.category}}</td>
+                            <td>{{course.description}}</td>
+                            <td>{{course.quantity}}</td>
+                            <td>
+                                <a href="/trainee/showalltrainees/{{course.id}}">Hiển thị học viên</a>
+                                <a class="btn btn-primary" href="/trainee/viewSchedules/{{course.id}}">Hiển thị lịch trình</a>
+                                {{#if ../type}}
+                                    {{#if (course.registered)}}
+                                        <button class="btn btn-danger" href="" data-bs-toggle="modal" data-bs-target="#unregisterModal"
+                                    data-id="{{course.id}}">Hủy đăng ký</button>
+                                    {{else}}
+                                        {{#if ../full_slot}}
+                                            <button type="button" class="btn btn-secondary" disabled>Hết lượt đăng ký</button>
+                                        {{else}}
+                                            <a class="btn btn-warning" href="" data-bs-toggle="modal" data-bs-target="#registerModal"
+                                            data-id="{{course.id}}">Đăng ký</a>
+                                        {{/if}}
+                                    {{/if}}
+                                {{/if}}
+                            </td>
+                        </tr>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan='6' class='text-center'>Không thể tìm thấy khóa học này</td>
+                        </tr>
+                        {{/if}}
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {{> footer}}
+    
+    <!-- Modal register-->
+    <div class="modal fade" id="registerModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đăng kí khóa học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có muốn đăng kí khóa học này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-register" type="button" class="btn btn-success">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-register" method="post"></form>
+
+    <!-- Modal unregister-->
+    <div class="modal fade" id="unregisterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hủy đăng ký khóa học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn hủy đăng ký khóa học này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-unregister" type="button" class="btn btn-danger">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-unregister" method="post"></form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let courseId;
+            let registerForm = document.querySelector('.form-register')
+            let btnRegister = document.querySelector('#btn-register')
+            let registerModal = document.getElementById('registerModal')
+            registerModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                courseId = button.getAttribute('data-id');
+            })
+            btnRegister.onclick = () => {
+                registerForm.action = `/trainee/registerCourse/${courseId}?_method=PUT`;
+                registerForm.submit();
+            }
+        })
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let courseId;
+            let unregisterForm = document.querySelector('.form-unregister')
+            let btnUnregister = document.querySelector('#btn-unregister')
+            let unregisterModal = document.getElementById('unregisterModal')
+            unregisterModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                courseId = button.getAttribute('data-id');
+            })
+            btnUnregister.onclick = () => {
+                unregisterForm.action = `/trainee/unregisterCourse/${courseId}?_method=PUT`;
+                unregisterForm.submit();
+            }
+        })
+    </script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

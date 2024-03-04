@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarAdmin}}
+        <div class="main_content">
+            <div class="container">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <a class="me-5 btn btn-success" href="/admin/viewTrainer/get-create">Thêm mới</a>
+                        <span class="me-5">Tổng: {{count}}</span>
+                    </div>
+                    <div>
+                        <form class="d-flex input-group" method="get" action="/admin/viewTrainer/search">
+                            <input type="text" name="search" id="search" placeholder="Tìm kiếm theo tên">
+                            <button type="submit" class="btn btn-primary btn-search">Tìm</button>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <table class="table table-hover">
+                    <thead class="bg-warning">
+                        <tr>
+
+                            <th scope="col">Tên</th>
+                            <th scope="col">Email</th>
+                            {{!-- <th scope="col">Age</th> --}}
+                            <th scope="col">SĐT</th>
+                            <th scope="col">Địa chỉ</th>
+                            <th scope="col">Khóa học</th>
+                            <th scope="col">Thời gian cập nhật</th>
+                            <th scope="col"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#if trainers}}
+                        {{#each trainers}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>{{this.email}}</td>
+                            {{!-- <td>{{this.age}}</td> --}}
+                            <td>{{this.phone}}</td>
+                            <td>{{this.address}}</td>
+                            <td class="w-25">
+                                {{#each this.categoriesName}}
+                                    {{this}}
+                                    <br />
+                                {{/each}}
+                            </td>
+                            <td>{{this.dateCreated}}</td>
+                            <td>
+                                <a class="btn btn-secondary" href="/admin/viewTrainer/{{this._id}}/view">Chi tiết</a>    
+                                <a class="btn btn-primary" href="/admin/viewTrainer/{{this._id}}/edit">Cập nhật</a>
+                                <a class="btn btn-danger" href="" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="{{this._id}}">Xóa</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="4" class="text-center">Bạn chưa có giảng viên.</td>
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        {{#if trainer}}
+                        <tr>
+                            <td>{{trainer.name}}</td>
+                            <td>{{trainer.email}}</td>
+                            {{!-- <td>{{trainer.age}}</td> --}}
+                            <td>{{trainer.phone}}</td>
+                            <td>{{trainer.address}}</td>
+                            <td class="w-25">
+                                {{#each trainer.categoriesName}}
+                                    {{this}}
+                                    <br />
+                                {{/each}}
+                            </td>
+                            <td>{{trainer.dateCreated}}</td>
+                            <td>
+                                <a class="btn btn-secondary" href="/admin/viewTrainer?id={{trainer._id}}/view">Chi tiết</a>    
+                                <a class="btn btn-primary" href="/admin/viewTrainer?id={{trainer._id}}/edit">Cập nhật</a>
+                                <a href="">Xóa</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan='8' class='text-center'>Không thể tìm thấy giảng viên này</td>
+                        </tr>
+                        {{/if}}
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa học viên này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-student" type="button" class="btn btn-danger">Xác nhận</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-delete" method="post"></form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let trainerId;
+            let deleteForm = document.querySelector('.form-delete')
+            let btnDeleteTrainer = document.querySelector('#btn-delete-student')
+            let deleteModal = document.getElementById('deleteModal')
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                trainerId = button.getAttribute('data-id')
+            })
+            btnDeleteTrainer.onclick = () => {
+                deleteForm.action = `/admin/viewTrainer/${trainerId}?_method=DELETE`;
+                deleteForm.submit();
+            }
+        })
+
+    </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    {{> footer}}
+</body>
+
+</html>

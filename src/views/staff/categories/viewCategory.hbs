@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khóa học</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/sideBar.css">
+    <style>
+        .form-search:focus,
+        .btn-search:focus,
+        .btn-search:active:focus {
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    {{> header}}
+    <div class="wrapper">
+        {{> sidebarStaff}}
+        <div class="main_content">
+            <div class="container">
+                <div class="d-flex justify-content-between my-3">
+                    <div class="d-flex align-items-center">
+                        <a class="btn btn-success" href="/staff/viewCategory/create">Thêm mới</a>
+                        <span class="m-3 me-5">Tổng: {{count}}</span>
+                    </div>
+                    <div>
+                        <form class="d-flex input-group" method="get" action="/staff/viewCategory/search">
+                            <input class="form-control form-search" type="text" name="search" id="search"
+                                placeholder="Tìm kiếm theo tên">
+                            <button type="submit" class="btn btn-primary btn-search">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+                {{#if messageError}}
+                <div class="alert alert-danger">{{messageError}}</div>
+                {{/if}}
+                <table class="table table-hover">
+                    <thead class="bg-warning">
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Tên</th>
+                            <th scope="col">Thời gian cập nhật</th>
+                            <th scope="col"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#if categories}}
+                        {{#each categories}}
+                        <tr>
+                            <th>{{sum @index}}</th>
+                            <td>{{this.name}}</td>
+                            <td>{{this.dateCreated}}</td>
+                            <td>
+                                <a class="btn btn-success" href="/staff/viewCategory/{{this._id}}/edit">Cập nhật</a>
+                                <a class="btn btn-danger" href="" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="{{this._id}}">Xóa</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="4" class="text-center">Bạn chưa có khóa học nào.</td>
+                        </tr>
+                        {{/each}}
+                        {{else}}
+                        {{#if category}}
+                        <tr>
+                            <th>1</th>
+                            <td>{{category.name}}</td>
+                            <td>{{category.dateCreated}}</td>
+                            <td>
+                                <a class="btn btn-success" href="/staff/viewCategory/{{category._id}}/edit">Cập nhật</a>
+                                <a class="btn btn-danger" href="" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="{{category._id}}">Xóa</a>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan='5' class='text-center'>Không tìm thấy khóa học</td>
+                        </tr>
+                        {{/if}}
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {{> footer}}
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa khóa học</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa khóa học này?
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-delete-category" type="button" class="btn btn-danger">Đồng ý</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="form-delete" method="post"></form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let categoryId;
+            let deleteForm = document.querySelector('.form-delete')
+            let btnDeleteCategory = document.querySelector('#btn-delete-category')
+            let deleteModal = document.getElementById('deleteModal')
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                let button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                categoryId = button.getAttribute('data-id')
+            })
+            btnDeleteCategory.onclick = () => {
+                deleteForm.action = `/staff/viewCategory/${categoryId}?_method=DELETE`;
+                deleteForm.submit();
+            }
+        })
+    </script>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
